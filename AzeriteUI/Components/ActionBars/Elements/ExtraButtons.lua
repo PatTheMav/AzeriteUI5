@@ -60,10 +60,6 @@ ExtraButtons.UpdateButton = function(self, button)
 	local b = "" -- GetMedia("blank")
 
 	if (button.icon or button.Icon) then (button.icon or button.Icon):SetAlpha(0) end
-	if (button.NormalTexture) then button.NormalTexture:SetAlpha(0) end -- Zone
-	if (button.Flash) then button.Flash:SetTexture(nil) end -- Extra
-	if (button.style) then button.style:SetAlpha(0) end -- Extra
-	if (button.SpellActivationAlert) then button.SpellActivationAlert:SetAlpha(0) end -- Extra
 
 	-- Todo: Check which ones are there, this might not be needed.
 	if (button.SetNormalTexture) then
@@ -90,8 +86,6 @@ ExtraButtons.UpdateButton = function(self, button)
 		hooksecurefunc(button, "SetCheckedTexture", function(b,...) if(...~="")then b:SetCheckedTexture("") end end)
 	end
 
-	button:SetSize(unpack(db.ExtraButtonSize))
-
 	-- Custom overlay frame
 	local overlay = CreateFrame("Frame", nil, button)
 	overlay:SetFrameLevel(button:GetFrameLevel() + 3)
@@ -103,6 +97,7 @@ ExtraButtons.UpdateButton = function(self, button)
 	border:SetSize(unpack(db.ExtraButtonBorderSize))
 	border:SetTexture(db.ExtraButtonBorderTexture)
 	border:SetVertexColor(unpack(db.ExtraButtonBorderColor))
+	border:SetAlpha(0.8)
 	button.iconBorder = border
 
 	local cooldown = button.cooldown or button.Cooldown
@@ -205,6 +200,7 @@ ExtraButtons.UpdateButton = function(self, button)
 		border:SetSize(unpack(db.ExtraButtonBorderSize))
 		border:SetTexture(db.ExtraButtonBorderTexture)
 		border:SetVertexColor(unpack(db.ExtraButtonBorderColor))
+		border:SetAlpha(0.8)
 
 		button.__GP_Border = border
 	end
@@ -228,9 +224,6 @@ ExtraButtons.UpdateZoneButtons = function(self)
 	local frame = ZoneAbilityFrame
 	if (not frame) then
 		return
-	end
-	if (frame.Style) then
-		frame.Style:SetAlpha(0)
 	end
 	if (frame.SpellButtonContainer) then
 		for button in frame.SpellButtonContainer:EnumerateActive() do
