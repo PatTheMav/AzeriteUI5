@@ -49,15 +49,3 @@ if (ns.WoW10 and ns.ClientBuild >= 52188) then
 	end
 
 end
-
-FixBlizzardBugs.OnInitialize = function(self)
-
-	-- Don't call this prior to our own addon loading,
-	-- or it'll completely mess up the loading order.
-	LoadAddOn("Blizzard_Channels")
-
-	-- Kill off the non-stop voice chat error 17 on retail.
-	-- This only occurs in linux, but we can't check for that.
-	ChannelFrame:UnregisterEvent("VOICE_CHAT_ERROR")
-
-end
