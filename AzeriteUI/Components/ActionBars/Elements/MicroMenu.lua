@@ -342,6 +342,30 @@ end
 MicroMenu.OnInitialize = function(self)
 end
 
+MicroMenu.setupHiddenBackpack = function(self)
+	local backpack = MainMenuBarBackpackButton
+
+	if (backpack) then
+		backpack.InitPosition = function(self, ...)
+			local _, _, rp = self:GetPoint()
+
+			if (rp ~= "CENTER") then
+				backpack:ClearAllPoints()
+				backpack:SetPoint("CENTER", MicroMenu.toggle, "CENTER", 0, 0)
+			end
+		end
+
+		backpack:SetParent(self.toggle)
+		backpack:InitPosition()
+		backpack:SetFrameStrata("LOW")
+		backpack:SetFrameLevel(0)
+		backpack:SetSize(1, 1)
+		backpack:SetAlpha(0)
+
+		hooksecurefunc(backpack, "SetPoint", backpack.InitPosition)
+	end
+end
+
 MicroMenu.OnEnable = function(self)
 
 	-- Watch this, it is a potential source of taint in WoW11.
@@ -351,6 +375,9 @@ MicroMenu.OnEnable = function(self)
 	end
 
 	self:SpawnButtons()
+
+	self:setupHiddenBackpack()
+
 	self:RegisterEvent("DISPLAY_SIZE_CHANGED", "OnEvent")
 	self:RegisterEvent("PLAYER_ENTERING_WORLD", "OnEvent")
 	self:RegisterEvent("PLAYER_REGEN_DISABLED", "OnEvent")
