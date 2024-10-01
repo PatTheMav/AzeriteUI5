@@ -277,7 +277,7 @@ local Skins = {
 			Compass = true,
 			Crafting = true, -- retail
 			Difficulty = true,
-			Expansion = true, -- retail
+			Expansion = false, -- retail
 			Eye = false, -- wrath + retail
 			Mail = true,
 			Tracking = true,
@@ -348,15 +348,6 @@ local Minimap_OnMouseUp = function(self, button)
 		else
 			ToggleDropDownMenu(1, nil, _G[ns.Prefix.."MiniMapTrackingDropDown"], "cursor")
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON, "SFX")
-		end
-	elseif (button == "MiddleButton" and ns.IsRetail) then
-		local GLP = GarrisonLandingPageMinimapButton or ExpansionLandingPageMinimapButton
-		if (GLP and GLP:IsShown()) and (not InCombatLockdown()) then
-			if (GLP.ToggleLandingPage) then
-				GLP:ToggleLandingPage()
-			else
-				GarrisonLandingPage_Toggle()
-			end
 		end
 	else
 		local func = Minimap.OnClick or Minimap_OnClick
@@ -879,6 +870,27 @@ MinimapMod.CreateCustomElements = function(self)
 
 			self.addonCompartment = addons
 		end
+
+		local ExpansionButton = self.Objects.Expansion
+		if (ExpansionButton) then
+			ExpansionButton:SetParent(MinimapBackdrop)
+
+			ExpansionButton.InitPosition = function(self)
+				local _, _, rp = self:GetPoint()
+
+				if (rp ~= "BOTTOMLEFT") then
+					ExpansionButton:ClearAllPoints()
+					ExpansionButton:SetPoint("CENTER", Minimap, "BOTTOMLEFT", 25, 25)
+				end
+			end
+
+			ExpansionButton:InitPosition()
+			ExpansionButton:SetFrameLevel(Minimap:GetFrameLevel() + 10)
+			hooksecurefunc(ExpansionButton, "SetPoint", ExpansionButton.InitPosition)
+			hooksecurefunc(ExpansionButton, "UpdateIconForGarrison", ExpansionButton.InitPosition)
+
+			ExpansionButton:SetAlpha(1)
+		end
 	end
 
 	local dropdown = nil
@@ -1182,6 +1194,8 @@ MinimapMod.OnEnable = function(self)
 	if (ns.IsRetail) then
 		self.frame:SetArchBlobRingScalar(0)
 		self.frame:SetQuestBlobRingScalar(0)
+
+
 	end
 
 	self:CreateCustomElements()
