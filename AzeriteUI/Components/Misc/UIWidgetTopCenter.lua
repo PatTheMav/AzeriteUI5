@@ -86,11 +86,23 @@ UIWidgetTopCenter.PrepareFrames = function(self)
 end
 
 UIWidgetTopCenter.OnEvent = function(self, event, ...)
+	local db = ns.GetConfig("UIWidgetTopCenter")
+
+	local hideWithTarget = self.db.profile.hideWithTarget and db.hideWithTarget
+	local fadeWithTarget = db.fadeWithTarget
+
 	if (event == "PLAYER_ENTERING_WORLD" or event == "PLAYER_TARGET_CHANGED") then
-		if (self.db.profile.hideWithTarget and UnitExists("target")) then
+		if (hideWithTarget and UnitExists("target")) then
 			self.frame:Hide()
+		elseif (fadeWithTarget and UnitExists("target")) then
+			self.frame:Show()
+			self.frame:SetAlpha(db.fadeValue)
+
+			self:UpdateContentPosition()
 		else
 			self.frame:Show()
+			self.frame:SetAlpha(1)
+
 			self:UpdateContentPosition()
 		end
 	end

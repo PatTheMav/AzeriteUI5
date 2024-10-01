@@ -27,5 +27,6 @@
 	<Script file="Data\Tooltips.lua"/>
 	<Script file="Data\ToTUnitFrame.lua"/>
 	<Script file="Data\VehicleExitButton.lua"/>
+	<Script file="Data\UIWidgetTopCenter.lua"/>
 
 </Ui>
