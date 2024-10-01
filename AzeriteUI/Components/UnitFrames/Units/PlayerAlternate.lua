@@ -879,15 +879,6 @@ PlayerFrameAltMod.PostInitialize = function(self)
 end
 
 PlayerFrameAltMod.OnEnable = function(self)
-
-	-- Disable Blizzard player alternate power bar,
-	-- as we're integrating this into the standard power crystal.
-	if (PlayerPowerBarAlt) then
-		PlayerPowerBarAlt:UnregisterEvent("UNIT_POWER_BAR_SHOW")
-		PlayerPowerBarAlt:UnregisterEvent("UNIT_POWER_BAR_HIDE")
-		PlayerPowerBarAlt:UnregisterEvent("PLAYER_ENTERING_WORLD")
-	end
-
 	self:CreateUnitFrames()
 	self:CreateAnchor("PlayerFrame (Alternate)")
 
