@@ -66,6 +66,15 @@ local Health_PostUpdate = function(element, unit, cur, max)
 	if (predict) then
 		predict:ForceUpdate()
 	end
+
+	local classification = element.__owner.Classification
+	if (classification and classification:IsShown()) then
+		if (cur / max) < 0.1 then
+			classification:SetAlpha(0.5)
+		else
+			classification:SetAlpha(1)
+		end
+	end
 end
 
 local Health_UpdateColor = function(self, event, unit)
@@ -423,20 +432,19 @@ local NamePlate_PostUpdateHoverElements = function(self)
 		local showNameAlways = NamePlatesMod.db.profile.showNameAlways
 		if (self.isMouseOver or self.isTarget or self.isSoftTarget or self.inCombat) then
 			if (self.isTarget) then
-				self.Health.Value:Hide()
 				if (showNameAlways) then
 					self.Name:Show()
 				else
 					self.Name:Hide()
 				end
 			else
-				local castbar = self.Castbar
-				if (castbar.casting or castbar.channeling or castbar.empowering) then
-					self.Health.Value:Hide()
-				else
-					self.Health.Value:Show()
-				end
 				self.Name:Show()
+			end
+
+			if (self.isMouseOver or self.inCombat) then
+				self.Health.Value:Show()
+			else
+				self.Health.Value:Hide()
 			end
 		else
 			if (showNameAlways) then

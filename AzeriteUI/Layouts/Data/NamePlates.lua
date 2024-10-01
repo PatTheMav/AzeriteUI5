@@ -66,11 +66,11 @@ ns.RegisterConfig("NamePlates", {
 	HealthBackdropSize = { 94.315789474, 24.888888889 },
 	HealthBackdropTexture = GetMedia("nameplate_backdrop"),
 
-	HealthValuePosition = { "TOP", 0, -18 },
+	HealthValuePosition = { "TOP", 0, 0 },
 	HealthValueJustifyH = "CENTER",
 	HealthValueJustifyV = "MIDDLE",
 	HealthValueFont = GetFont(12,true),
-	HealthValueColor = { Colors.highlight[1], Colors.highlight[2], Colors.highlight[3], .5 },
+	HealthValueColor = { Colors.highlight[1], Colors.highlight[2], Colors.highlight[3], .75 },
 
 	-- CastBar
 	-----------------------------------------
