@@ -38,7 +38,7 @@ ns.RegisterConfig("MirrorTimers", {
 	MirrorTimerBarSize = { 111, 12 },
 	MirrorTimerBarPadding = 20,
 	MirrorTimerBarTexture = GetMedia("cast_bar"),
-	MirrorTimerBarColor = { Colors.quest.red[1], Colors.quest.red[2], Colors.quest.red[3] },
+	MirrorTimerBarColor = { Colors.paleblue[1], Colors.paleblue[2], Colors.paleblue[3] },
 
 	MirrorTimerLabelPosition = { "CENTER", 0, 0 },
 	MirrorTimerLabelFont = GetFont(14, true),
