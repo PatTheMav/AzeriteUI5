@@ -73,6 +73,7 @@ local defaults = { profile = ns:Merge({
 	theme = "Classic",
 	showItemID = false,
 	showSpellID = false,
+	showGuildName = false,
 	anchor = true,
 	anchorToCursor = false,
 	hideInCombat = false,

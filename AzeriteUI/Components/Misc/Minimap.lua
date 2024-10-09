@@ -27,7 +27,7 @@ local _, ns = ...
 
 local MinimapMod = ns:NewModule("Minimap", ns.MovableModulePrototype, "LibMoreEvents-1.0", "AceHook-3.0", "AceTimer-3.0", "AceConsole-3.0")
 
-local LibDD = LibStub("LibUIDropDownMenu-4.0")
+--local LibDD = LibStub("LibUIDropDownMenu-4.0")
 
 -- Lua API
 local ipairs = ipairs
@@ -49,6 +49,7 @@ local unpack = unpack
 -- GLOBALS: InCombatLockdown, IsResting, HasNewMail, PlaySound, ToggleDropDownMenu
 -- GLOBALS: MinimapZoomIn, MinimapZoomOut, Minimap_OnClick
 -- GLOBALS: Minimap, MinimapBackdrop, MinimapCluster, MinimapBorder, MinimapBorderTop, MicroButtonAndBagsBar, MinimapCompassTexture, MiniMapInstanceDifficulty, MiniMapTracking
+-- GLOBALS: MenuUtil
 -- GLOBALS: SOUNDKIT, MINIMAP_LABEL, PROFESSIONS_CRAFTING
 
 -- Addon API
@@ -341,7 +342,11 @@ end
 local Minimap_OnMouseUp = function(self, button)
 	if (button == "RightButton") then
 		if (ns.IsClassic) then
-			MinimapMod:ShowMinimapTrackingMenu()
+			if (MinimapMod.ShowMinimapTrackingMenu) then
+				MinimapMod:ShowMinimapTrackingMenu()
+			end
+		elseif (ns.WoW11) then
+			MenuUtil.CreateContextMenu(self, MinimapCluster.Tracking.Button.menuGenerator)
 		else
 			ToggleDropDownMenu(1, nil, _G[ns.Prefix.."MiniMapTrackingDropDown"], "cursor")
 			PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON, "SFX")
@@ -828,62 +833,74 @@ MinimapMod.CreateCustomElements = function(self)
 
 	self.mail = mail
 
-	local dropdown = LibDD:Create_UIDropDownMenu(ns.Prefix.."MiniMapTrackingDropDown", UIParent)
-	dropdown:SetID(1)
-	dropdown:SetClampedToScreen(true)
-	dropdown:Hide()
+	local dropdown = nil
 
-	if (ns.IsClassic) then
-		self.ShowMinimapTrackingMenu = function(self)
-			local hasTracking
-			local trackingMenu = { { text = TRACKING or "Select Tracking", isTitle = true, notCheckable = true } }
-			for _,spellID in ipairs({
-				1494, --Track Beasts
-				19883, --Track Humanoids
-				19884, --Track Undead
-				19885, --Track Hidden
-				19880, --Track Elementals
-				19878, --Track Demons
-				19882, --Track Giants
-				19879, --Track Dragonkin
-					5225, --Track Humanoids: Druid
-					5500, --Sense Demons
-					5502, --Sense Undead
-					2383, --Find Herbs
-					2580, --Find Minerals
-					2481  --Find Treasure
-			}) do
-				if (IsPlayerSpell(spellID)) then
-					hasTracking = true
-					local tracking = GetTrackingTexture()
-					local spellName = GetSpellInfo(spellID)
-					local spellTexture = GetSpellTexture(spellID)
+	-- This is broken?
+	if (true) then
+
+		--if (not ns.WoW11) then
+		--	dropdown = LibDD:Create_UIDropDownMenu(ns.Prefix.."MiniMapTrackingDropDown", UIParent)
+		--	dropdown:SetID(1)
+		--	dropdown:SetClampedToScreen(true)
+		--	dropdown:Hide()
+		--	dropdown.noResize = true
+		--	self.dropdown = dropdown
+		--end
+
+		if (ns.IsClassic) then
+
+			--[[--
+			self.ShowMinimapTrackingMenu = function(self)
+				local hasTracking
+				local trackingMenu = { { text = TRACKING or "Select Tracking", isTitle = true, notCheckable = true } }
+				for _,spellID in ipairs({
+					1494, --Track Beasts
+					19883, --Track Humanoids
+					19884, --Track Undead
+					19885, --Track Hidden
+					19880, --Track Elementals
+					19878, --Track Demons
+					19882, --Track Giants
+					19879, --Track Dragonkin
+						5225, --Track Humanoids: Druid
+						5500, --Sense Demons
+						5502, --Sense Undead
+						2383, --Find Herbs
+						2580, --Find Minerals
+						2481  --Find Treasure
+				}) do
+					if (IsPlayerSpell(spellID)) then
+						hasTracking = true
+						local tracking = GetTrackingTexture()
+						local spellName = GetSpellInfo(spellID)
+						local spellTexture = GetSpellTexture(spellID)
+						table_insert(trackingMenu, {
+							text = spellName,
+							icon = spellTexture,
+							checked = tracking == spellTexture,
+							func = function() CastSpellByID(spellID) end,
+
+						})
+					end
+				end
+				if (hasTracking) then
 					table_insert(trackingMenu, {
-						text = spellName,
-						icon = spellTexture,
-						checked = tracking == spellTexture,
-						func = function() CastSpellByID(spellID) end,
-
+						text = OBJECTIVES_STOP_TRACKING,
+						notCheckable = true,
+						func = function() CancelTrackingBuff() end
 					})
+					EasyMenu(trackingMenu, dropdown, "cursor", 0 , 0, "MENU")
+					PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON, "SFX")
 				end
 			end
-			if (hasTracking) then
-				table_insert(trackingMenu, {
-					text = OBJECTIVES_STOP_TRACKING,
-					notCheckable = true,
-					func = function() CancelTrackingBuff() end
-				})
-				EasyMenu(trackingMenu, dropdown, "cursor", 0 , 0, "MENU")
-				PlaySound(SOUNDKIT.IG_MAINMENU_OPTION_CHECKBOX_ON, "SFX")
-			end
+			--]]--
+		elseif (not ns.WoW11) then
+			--if (MiniMapTrackingDropDown_Initialize) then
+			--	LibDD:UIDropDownMenu_Initialize(dropdown, MiniMapTrackingDropDown_Initialize, "MENU")
+			--end
 		end
-	else
-		LibDD:UIDropDownMenu_Initialize(dropdown, MiniMapTrackingDropDown_Initialize, "MENU")
+
 	end
-
-	dropdown.noResize = true
-
-	self.dropdown = dropdown
 
 	self:UpdateCustomElements()
 	self.CreateCustomElements = noop
